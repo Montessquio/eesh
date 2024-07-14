@@ -41,7 +41,14 @@ impl LogBuffer {
         content: Line<'static>,
     ) {
         self.raw.push_back((timestamp, tag, content));
-        //self.set_scroll(self.raw.len() - 1);
+
+        // If scroll is zero, do not update scroll so as to 
+        // auto-follow new messages.
+        // But if it's nonzero, we want to stay where the
+        // "camera" is and not disrupt the user's scroll.
+        if self.scroll() != 0 {
+            self.inc_scroll();
+        }
 
         // Discard any older messages we need to in order to get to within the buffer limit.
         while self.raw.len() >= self.buf_limit.into() {
@@ -166,18 +173,17 @@ impl ContextualWidget for LogBuffer {
                 .borders(Borders::ALL ^ Borders::BOTTOM)
                 .title_alignment(Alignment::Center)
                 .title(format!(
-                    "Rect: {:?} | Scroll: {} | LC: {} | LLH: {:?} | TICK: {}",
+                    "Rect: {:?} | Scroll: {} | LC: {} | LLH: {:?}",
                     (area.width, area.height),
                     self.scroll,
                     self.count(),
                     Self::line_height(
                         self.lines()
-                            .get(self.count() - 1)
+                            .get(self.count().saturating_sub(1))
                             .map(|i| &i.2)
                             .unwrap_or(&Line::default()),
                         content_width
                     ),
-                    crate::GLOBAL_TICK.load(std::sync::atomic::Ordering::Relaxed)
                 )),
         );
 
