@@ -1,0 +1,22 @@
+[package]
+name = "eesh"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bitflags = "2.6.0"
+chrono = { version = "0.4.38", features = ["serde"] }
+chrono-tz = { version = "0.9.0", features = ["serde"] }
+color-eyre = "0.6.3"
+hashbrown = "0.14.5"
+irc = { version = "1.0.0", features = ["tokio-rustls", "tokio-socks"] }
+itertools = "0.13.0"
+lazy_static = "1.5.0"
+ratatui = { version = "0.27.0", features = ["serde", "macros", "all-widgets", "unstable-rendered-line-info", "unstable-widget-ref"] }
+serde = { version = "1.0.203", features = ["serde_derive"] }
+tokio = { version = "1.38.0", features = ["full"] }
+tracing = { version = "0.1.40", features = ["log"] }
+unicode-segmentation = "1.11.0"
+unicode-width = "0.1.13"
