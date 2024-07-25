@@ -4,7 +4,7 @@ use std::sync::{Arc, Mutex};
 use tracing::Level;
 use tracing_subscriber::Layer;
 
-use crate::widget::LogBuffer;
+use crate::tui::widget::LogBuffer;
 
 pub struct LogBufferLayer {
     lb: Arc<Mutex<LogBuffer>>,

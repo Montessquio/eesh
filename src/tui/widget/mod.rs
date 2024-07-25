@@ -1,15 +1,23 @@
+use std::sync::{Arc, Mutex};
+
 use ratatui::{buffer::Buffer, layout::Rect, widgets::Widget};
 pub use terminal::Terminal;
 pub use logbuffer::LogBuffer;
 
-use crate::Context;
-
 mod logbuffer;
 mod terminal;
 
+#[derive(Default)]
+pub struct RenderContext {
+    pub user_line: String,
+    pub lcol_width: u16,
+
+    pub text_buffer: Option<Arc<Mutex<LogBuffer>>>,
+}
+
 pub struct ContextualRender<'a, T> where T: ContextualWidget {
     lb: &'a T,
-    ctx: &'a Context,
+    ctx: &'a RenderContext,
 }
 
 impl<'a, T> Widget for ContextualRender<'a, T> where T: ContextualWidget {
@@ -21,9 +29,9 @@ impl<'a, T> Widget for ContextualRender<'a, T> where T: ContextualWidget {
 }
 
 pub trait ContextualWidget: Sized {
-    fn with_context<'a>(&'a self, ctx: &'a Context) -> ContextualRender<'a, Self> {
+    fn with_context<'a>(&'a self, ctx: &'a RenderContext) -> ContextualRender<'a, Self> {
         ContextualRender { lb: self, ctx }
     }
 
-    fn render_ref<'a>(&'a self, ctx: &'a Context, area: Rect, buf: &mut Buffer);
+    fn render_ref<'a>(&'a self, ctx: &'a RenderContext, area: Rect, buf: &mut Buffer);
 }

@@ -5,8 +5,8 @@ use ratatui::{
     widgets::{Block, Borders, Paragraph, Widget},
 };
 
-use crate::Context;
 use super::ContextualWidget;
+use super::RenderContext;
 
 pub struct Terminal;
 
@@ -17,17 +17,18 @@ impl Terminal {
 }
 
 impl ContextualWidget for Terminal {
-    fn render_ref(&self, ctx: &Context, area: Rect, buf: &mut Buffer)
+    fn render_ref(&self, ctx: &RenderContext, area: Rect, buf: &mut Buffer)
     where
         Self: Sized,
     {
         let layout = Layout::vertical(vec![Constraint::Fill(1), Constraint::Length(2)]).split(area);
 
-        ctx.text_buffer
-            .lock()
-            .expect("Screenbuffer mutex was poisoned!")
-            .with_context(ctx)
-            .render(layout[0], buf);
+        if let Some(tb) = &ctx.text_buffer {
+            tb.lock()
+                .expect("Screenbuffer mutex was poisoned!")
+                .with_context(ctx)
+                .render(layout[0], buf);
+        }
 
         Paragraph::new(Text::from(vec![Line::from(ctx.user_line.as_str())]))
             .left_aligned()

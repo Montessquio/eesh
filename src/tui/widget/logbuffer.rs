@@ -10,7 +10,7 @@ use std::{collections::VecDeque, sync::atomic::AtomicU16};
 use unicode_segmentation::UnicodeSegmentation;
 use unicode_width::UnicodeWidthStr;
 
-use crate::Context;
+use crate::RenderContext;
 
 use super::ContextualWidget;
 
@@ -150,7 +150,7 @@ impl LogBuffer {
 }
 
 impl ContextualWidget for LogBuffer {
-    fn render_ref(&self, ctx: &Context, area: Rect, buf: &mut Buffer) {
+    fn render_ref(&self, ctx: &RenderContext, area: Rect, buf: &mut Buffer) {
         // Determine how many characters wide the content buffer is, in order to properly
         // apply line wrap.
         // content_width = area.width - TIMESTAMP_WIDTH - CUMULATIVE_BORDER_WIDTH - LCOL_WIDTH;
